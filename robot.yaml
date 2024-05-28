@@ -54,7 +54,7 @@ arguments:
       required: True
       defaultValue:
       description: File output
-    - name: purchase_status
+    - name: purchaseStatus
       type: Boolean
       required: True
       defaultValue:

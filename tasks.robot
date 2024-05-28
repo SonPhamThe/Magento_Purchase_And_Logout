@@ -80,13 +80,20 @@ Login With Magento Credentials
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
     ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
-    Wait Until Keyword Succeeds
+    ${login_credentials}=    Wait Until Keyword Succeeds
     ...    3x
     ...    1s
     ...    Login With Credentials
     ...    ${meganto_account_credentials}[username]
     ...    ${meganto_account_credentials}[password]
     ...    css=span.customer-name
+
+    IF    not ${login_credentials}
+        ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
+        Log Error    Login Credentials Failed
+        Set Out Arg    file_output    ${file_path}
+        Set Out Arg    purchaseStatus    ${False}
+    END
 
 Choose Each Product
     [Documentation]    Clicks on the product link based on the product category, wearables and type product.
@@ -98,7 +105,6 @@ Choose Each Product
     ${wearables}=    Get In Arg    wearables
     ${wearables_value}=    Set Variable    ${wearables}[value]
     ${wearables_value}=    Conver Data To Search Product    ${wearables_value}
-
 
     IF    '${category_value}' == 'Men'
         Mouse Over Element    ${MEN_CATEGORY_ID}    Id men not found
@@ -276,6 +282,8 @@ Go To Cart And Make A Payment
     END
 
     FOR    ${product}    IN    @{global_product_info}
+        Set To Dictionary    ${product}    color    ${color_product}
+        Set To Dictionary    ${product}    size    ${size_product}
         Set To Dictionary    ${product}    current_time    ${current_datetime}
         Set To Dictionary    ${product}    order_number    ${order_info['order_number']}
     END
@@ -283,11 +291,16 @@ Go To Cart And Make A Payment
     IF    '${order_info['STATUS_PAYMENT']}' == 'True'
         ${json_string}=    Evaluate    json.dumps($global_product_info)    json
         Create File    ${FILENAME}    ${json_string}
-        
+
         ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
         Set Out Arg    file_output    ${file_path}
 
-        Set Out Arg    purchase_status    ${True}
+        Set Out Arg    purchaseStatus    ${True}
+    ELSE
+        ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
+        Log Error    Payment purchase product failed
+        Set Out Arg    file_output    ${file_path}
+        Set Out Arg    purchaseStatus    ${False}
     END
 
 Check Product By Size, Color And Price
