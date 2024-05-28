@@ -78,7 +78,7 @@ Login With Magento Credentials
     Click Element    xpath=//li[@class="authorization-link"]/a
     ${meganto_account_credentials}=    Get Asset    meganto_account
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
-    ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
+    # ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
     ${login_credentials}=    Wait Until Keyword Succeeds
     ...    3x
@@ -290,9 +290,12 @@ Go To Cart And Make A Payment
 
     IF    '${order_info['STATUS_PAYMENT']}' == 'True'
         ${json_string}=    Evaluate    json.dumps($global_product_info)    json
-        Create File    ${FILENAME}    ${json_string}
 
         ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
+        Run Keyword And Ignore Error    Remove File    ${file_path}
+
+        Create File    ${FILENAME}    ${json_string}
+
         Set Out Arg    file_output    ${file_path}
 
         Set Out Arg    purchaseStatus    ${True}
