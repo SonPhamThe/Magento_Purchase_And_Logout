@@ -99,9 +99,6 @@ Choose Each Product
     ${wearables_value}=    Set Variable    ${wearables}[value]
     ${wearables_value}=    Conver Data To Search Product    ${wearables_value}
 
-    ${product_type}=    Get In Arg    product_type
-    ${product_type_value}=    Set Variable    ${product_type}[value]
-    ${product_type_value}=    Conver Data To Search Product    ${product_type_value}
 
     IF    '${category_value}' == 'Men'
         Mouse Over Element    ${MEN_CATEGORY_ID}    Id men not found
@@ -131,15 +128,15 @@ Choose Each Product
 
     IF    '${category_value}' == 'Gear'
         Mouse Over Element    ${GEAR_CATEGORY_ID}    Id gear not found
-        IF    '${product_type_value}' == 'Bags'
+        IF    '${wearables_value}' == 'Bags'
             Wait Until Element Is Visible    xpath=//a[@id="${BAGS_GEAR_CATEGORY_ID}"]
             Mouse Over And Click Element    ${BAGS_GEAR_CATEGORY_ID}    Id bags not found
         END
-        IF    '${product_type_value}' == 'Fitness Equipment'
+        IF    '${wearables_value}' == 'Fitness Equipment'
             Wait Until Element Is Visible    xpath=//a[@id="${FITNESS_GEAR_CATEGORY_ID}"]
             Mouse Over And Click Element    ${FITNESS_GEAR_CATEGORY_ID}    Id fitness equipment not found
         END
-        IF    '${product_type_value}' == 'Watches'
+        IF    '${wearables_value}' == 'Watches'
             Wait Until Element Is Visible    xpath=//a[@id="${WATCHES_GEAR_CATEGORY_ID}"]
             Mouse Over And Click Element    ${WATCHES_GEAR_CATEGORY_ID}    Id watches not found
         END
