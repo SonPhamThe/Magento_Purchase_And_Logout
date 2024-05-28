@@ -49,11 +49,11 @@ arguments:
       defaultValue:
       description: Quantity
   output:
-    - name: file_output
+    - name: file_info_product
       type: File
       required: True
       defaultValue:
-      description: File output
+      description: File Infomation Product
     - name: purchaseStatus
       type: Boolean
       required: True
