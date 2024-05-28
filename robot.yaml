@@ -23,11 +23,6 @@ arguments:
       required: True
       defaultValue:
       description: Wearables
-    - name: product_type
-      type: String
-      required: True
-      defaultValue:
-      description: Product Type
     - name: color
       type: String
       required: True
@@ -59,6 +54,11 @@ arguments:
       required: True
       defaultValue:
       description: File output
+    - name: purchase_status
+      type: Boolean
+      required: True
+      defaultValue:
+      description: Purchase Status
 
 condaConfigFile: conda.yaml
 environmentConfigs:
