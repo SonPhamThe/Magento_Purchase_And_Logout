@@ -102,12 +102,12 @@ Choose Each Product
     IF    '${category_value}' == 'Men'
         Mouse Over Element    ${MEN_CATEGORY_ID}    Id men not found
         IF    '${wearables_value}' == 'Tops'
-            Wait Until Element Is Visible    xpath=//a[@id="${TOPS_MEN_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${TOPS_MEN_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${TOPS_MEN_CATEGORY_ID}    Id tops men not found
         END
 
         IF    '${wearables_value}' == 'Bottoms'
-            Wait Until Element Is Visible    xpath=//a[@id="${BOTTOMS_MEN_CATEGORY_ID}]
+            Wait Until Element Is Visible    xpath=//a[@id="${BOTTOMS_MEN_CATEGORY_ID}]    timeout=10s
             Mouse Over And Click Element    ${BOTTOMS_MEN_CATEGORY_ID}    Id bottoms men not found
         END
     END
@@ -115,12 +115,12 @@ Choose Each Product
     IF    '${category_value}' == 'Women'
         Mouse Over Element    ${WOMEN_CATEGORY_ID}    Id women not found
         IF    '${wearables_value}' == 'Tops'
-            Wait Until Element Is Visible    xpath=//a[@id="${TOPS_WOMEN_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${TOPS_WOMEN_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${TOPS_WOMEN_CATEGORY_ID}    Id top women not found
         END
 
         IF    '${wearables_value}' == 'Bottoms'
-            Wait Until Element Is Visible    xpath=//a[@id="${BOTTOMS_WOMEN_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${BOTTOMS_WOMEN_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${BOTTOMS_WOMEN_CATEGORY_ID}    Id bottoms women not found
         END
     END
@@ -128,15 +128,15 @@ Choose Each Product
     IF    '${category_value}' == 'Gear'
         Mouse Over Element    ${GEAR_CATEGORY_ID}    Id gear not found
         IF    '${wearables_value}' == 'Bags'
-            Wait Until Element Is Visible    xpath=//a[@id="${BAGS_GEAR_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${BAGS_GEAR_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${BAGS_GEAR_CATEGORY_ID}    Id bags not found
         END
         IF    '${wearables_value}' == 'Fitness Equipment'
-            Wait Until Element Is Visible    xpath=//a[@id="${FITNESS_GEAR_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${FITNESS_GEAR_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${FITNESS_GEAR_CATEGORY_ID}    Id fitness equipment not found
         END
         IF    '${wearables_value}' == 'Watches'
-            Wait Until Element Is Visible    xpath=//a[@id="${WATCHES_GEAR_CATEGORY_ID}"]
+            Wait Until Element Is Visible    xpath=//a[@id="${WATCHES_GEAR_CATEGORY_ID}"]    timeout=10s
             Mouse Over And Click Element    ${WATCHES_GEAR_CATEGORY_ID}    Id watches not found
         END
     END
@@ -157,14 +157,14 @@ Add Product To Cart By Color, Size And Price
 
     WHILE    ${TRUE}
         Get Product In Page
-        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]    10s
-        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]    10s
-        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul    10s
+        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]    timeout=10s
+        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]    timeout=10s
+        Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul    timeout=10s
 
         ${check_last_page}=    Run Keyword And Return Status
         ...    Element Should Be Visible
         ...    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul/li[@class='item pages-item-next']
-        ...    10s
+        ...    timeout=10s
         IF    ${check_last_page}
             Click Element
             ...    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul/li[@class='item pages-item-next']
@@ -224,11 +224,11 @@ Get Product Links
 Go To Cart And Make A Payment
     [Documentation]    Proceeds to the checkout after adding products to the cart and saves the product information into an Excel file if the payment is successful
 
-    Wait Until Element Is Not Visible    xpath://span[@class='counter qty empty']    timeout=5s
+    Wait Until Element Is Not Visible    xpath://span[@class='counter qty empty']    timeout=10s
     ${check_cart}=    Run Keyword And Return Status
     ...    Wait Until Page Contains Element
     ...    xpath://a[@class='action showcart']//span[@class='counter qty']
-    ...    timeout=5s
+    ...    timeout=10s
     IF    not ${check_cart}
         Fatal Error    Not Found Product In Cart To Payment
     END
@@ -241,8 +241,8 @@ Go To Cart And Make A Payment
 
     Click Button    xpath=//button[@data-role='proceed-to-checkout']
 
-    Wait Until Element Is Not Visible    xpath://div[@id="checkout-shipping-method-load"]    timeout=5s
-    Wait Until Element Is Visible    xpath://button[@data-role='opc-continue']    timeout=5s
+    Wait Until Element Is Not Visible    xpath://div[@id="checkout-shipping-method-load"]    timeout=10s
+    Wait Until Element Is Visible    xpath://button[@data-role='opc-continue']    timeout=10s
     FOR    ${counter}    IN RANGE    0    3    1
         Click Element When Clickable    xpath://button[@data-role='opc-continue']
         ${timeout}=    Set Variable    10
@@ -289,7 +289,7 @@ Go To Cart And Make A Payment
 
         Create File    ${FILENAME}    ${json_string}
 
-        Set Out Arg    file_output    ${file_path}
+        Set Out Arg    file_info_product    ${file_path}
 
         Set Out Arg    purchaseStatus    ${True}
     ELSE

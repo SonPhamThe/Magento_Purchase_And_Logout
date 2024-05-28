@@ -55,9 +55,9 @@
         "value": "3",
         "required": true
     },
-    "file_output": {
-        "name": "file_output",
-        "description": "file_output ",
+    "file_info_product": {
+        "name": "file_info_product",
+        "description": "file_info_product ",
         "type": "File",
         "direction": "OUT",
         "value": "C:\\Magento Purchase And Logout/data_magento.json",
