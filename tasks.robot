@@ -80,20 +80,13 @@ Login With Magento Credentials
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
     ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
-    ${login_credentials}=    Wait Until Keyword Succeeds
+    Wait Until Keyword Succeeds
     ...    3x
     ...    1s
     ...    Login With Credentials
     ...    ${meganto_account_credentials}[username]
     ...    ${meganto_account_credentials}[password]
     ...    css=span.customer-name
-
-    IF    not ${login_credentials}
-        ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
-        Log Error    Login Credentials Failed
-        Set Out Arg    file_output    ${file_path}
-        Set Out Arg    purchaseStatus    ${False}
-    END
 
 Choose Each Product
     [Documentation]    Clicks on the product link based on the product category, wearables and type product.
