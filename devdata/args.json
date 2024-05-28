@@ -68,7 +68,15 @@
         "description": "file_output ",
         "type": "File",
         "direction": "OUT",
-        "value": "d:\\Magento_Website_Robot/data_magento.xlsx",
+        "value": "C:\\Magento Purchase And Logout/data_magento.json",
+        "required": true
+    },
+    "purchase_status": {
+        "name": "purchase_status",
+        "description": "purchase_status ",
+        "type": "Boolean",
+        "direction": "OUT",
+        "value": "True",
         "required": true
     }
 }

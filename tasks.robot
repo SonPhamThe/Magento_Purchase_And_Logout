@@ -17,6 +17,7 @@ Library             RPA.Windows
 Library             RPA.HTTP
 Library             RPA.JSON
 Library             DateTime
+Library             RPA.FileSystem
 Resource            resources/login_page.robot
 Resource            resources/mouse_action.robot
 
@@ -29,7 +30,7 @@ ${global_product_info}          ${EMPTY}
 ${color_product}                ${EMPTY}
 ${size_product}                 ${EMPTY}
 
-${EXCEL_FILE_NAME}              data_magento.xlsx
+${FILENAME}                     data_magento.json
 ${DIRECTORY_PATH}               ${CURDIR}
 
 ${current_time}                 ${EMPTY}
@@ -77,7 +78,7 @@ Login With Magento Credentials
     Click Element    xpath=//li[@class="authorization-link"]/a
     ${meganto_account_credentials}=    Get Asset    meganto_account
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
-    ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
+    # ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
     Wait Until Keyword Succeeds
     ...    3x
@@ -163,18 +164,22 @@ Add Product To Cart By Color, Size And Price
         Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]    10s
         Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]    10s
         Wait Until Page Contains Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul    10s
-        
+
         ${check_last_page}=    Run Keyword And Return Status
         ...    Element Should Be Visible
         ...    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul/li[@class='item pages-item-next']
         ...    10s
-        Run Keyword If    ${check_last_page}    Click Element    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul/li[@class='item pages-item-next']
-        Exit For Loop If    ${check_last_page} == ${FALSE}
+        IF    ${check_last_page}
+            Click Element
+            ...    xpath://*[@id="maincontent"]/div[3]/div[1]/div[4]/div[2]/ul/li[@class='item pages-item-next']
+        END
+        IF    ${check_last_page} == ${FALSE}    BREAK
     END
 
 Process To Product
     [Documentation]    Go To Detail Product And Check Product By Size, Color And Price Then Add Product
     [Arguments]    ${link}
+
     Go To    ${link}
     ${check_product_to_cart}=    Check Product By Size, Color And Price
     IF    ${check_product_to_cart}
@@ -184,6 +189,7 @@ Process To Product
 
 Get Product In Page
     [Documentation]    Go To Detail Product In Page
+
     ${product_links}=    Get Product Links
     ${total_links}=    Get Length    ${product_links}
     ${count_empty_link}=    Set Variable    0
@@ -202,15 +208,14 @@ Get Product In Page
             ${count_empty_link}=    Evaluate    ${count_empty_link}+1
         END
 
-        IF    ${index} == ${total_links - 1}
-            Go To    ${current_url}
-        END
+        IF    ${index} == ${total_links - 1}    Go To    ${current_url}
     END
 
     IF    ${count_empty_link} != 0    Log    Have ${count_empty_link} Empty Link
 
 Get Product Links
     [Documentation]    Retrieve the links of all products listed on the current page.
+
     @{product_elements}=    Get WebElements
     ...    css:ol.products.list.items.product-items li.item.product.product-item a.product.photo.product-item-photo
     @{product_links}=    Create List
@@ -273,21 +278,20 @@ Go To Cart And Make A Payment
         END
     END
 
-    IF    '${order_info['STATUS_PAYMENT']}' == 'True'
-        Create File Excel Data
-        FOR    ${product}    IN    @{global_product_info}
-            Save Infomation By Excel Files
-            ...    ${product}
-            ...    ${order_info}[order_number]
-            ...    ${color_product}
-            ...    ${size_product}
-            ...    ${current_time}
-        END
-        Save Workbook
+    FOR    ${product}    IN    @{global_product_info}
+        Set To Dictionary    ${product}    current_time    ${current_datetime}
+        Set To Dictionary    ${product}    order_number    ${order_info['order_number']}
     END
 
-    ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${EXCEL_FILE_NAME}
-    Set Out Arg    file_output    ${file_path}
+    IF    '${order_info['STATUS_PAYMENT']}' == 'True'
+        ${json_string}=    Evaluate    json.dumps($global_product_info)    json
+        Create File    ${FILENAME}    ${json_string}
+        
+        ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
+        Set Out Arg    file_output    ${file_path}
+
+        Set Out Arg    purchase_status    ${True}
+    END
 
 Check Product By Size, Color And Price
     [Documentation]    Checks if the product matches the specified size, color, and price
@@ -317,6 +321,7 @@ Check Product By Size, Color And Price
 Check Size Exists
     [Documentation]    Verify if the specified size exists for the product
     [Arguments]    ${size}
+
     ${sizes}=    Get WebElements    css:.swatch-option.text
     ${size_found}=    Set Variable    ${FALSE}
     FOR    ${elem}    IN    @{sizes}
@@ -331,6 +336,7 @@ Check Size Exists
 
 Check Price Exists
     [Documentation]    Verify if the product price falls within a specified range
+
     ${below_price}=    Get In Arg    below_price
     ${below_price_value}=    Set Variable    ${below_price}[value]
 
@@ -349,6 +355,7 @@ Check Price Exists
 Check Color Exists
     [Documentation]    Verify if the specified color exists for the product
     [Arguments]    ${color}
+
     ${colors}=    Get WebElements    css:.swatch-option.color
     ${color_found}=    Set Variable    ${FALSE}
     FOR    ${element}    IN    @{colors}
@@ -363,6 +370,7 @@ Check Color Exists
 
 Input Quantity Product
     [Documentation]    Enters the specified quantity of the product into the corresponding field on the webpage
+
     ${quantity}=    Get In Arg    quantity
     ${quantity_value}=    Set Variable    ${quantity}[value]
 
@@ -371,6 +379,7 @@ Input Quantity Product
 
 Save Infomation Product
     [Documentation]    Temporarily stores the product information such as name, price, and quantity of each item in the shopping cart
+
     ${global_product_info}=    Create List
     Wait Until Element Is Visible    xpath://table[@id='shopping-cart-table']    timeout=30s
     ${tbody}=    Get Webelements    xpath://table[@id='shopping-cart-table']/tbody
@@ -397,6 +406,7 @@ Save Infomation Product
 
 Check Status Payment And Get Order Number
     [Documentation]    Checks the payment status and retrieves the order number if the payment is successful
+
     ${is_visible}=    Run Keyword And Return Status
     ...    Element Should Be Visible
     ...    xpath://div[@class='checkout-success']
@@ -405,31 +415,9 @@ Check Status Payment And Get Order Number
     ${order_info}=    Create Dictionary    order_number=${order_number}    STATUS_PAYMENT=${STATUS_PAYMENT}
     RETURN    ${order_info}
 
-Create File Excel Data
-    [Documentation]    Creates a new Excel file to store product information and order numbers
-    Create Workbook    data_magento.xlsx
-    Set Worksheet Value    1    1    Name
-    Set Worksheet Value    1    2    Quantity
-    Set Worksheet Value    1    3    Price
-    Set Worksheet Value    1    4    Order Number
-    Set Worksheet Value    1    5    Size
-    Set Worksheet Value    1    6    Color
-    Set Worksheet Value    1    7    Time
-
-Save Infomation By Excel Files
-    [Documentation]    Saves the information of each product along with the order number, color, and size into the Excel file
-    [Arguments]    ${product}    ${order_number}    ${color}    ${size}    ${current_time}
-    ${row}=    Create Dictionary
-    ...    Name=${product['name_product']}
-    ...    Price=${product['price_product']}
-    ...    Quantity=${product['quantity_product']}
-    ...    Order Number=${order_number}
-    ...    Size=${size}
-    ...    Color=${color}
-    ...    Time=${current_time}
-    Append Rows To Worksheet    ${row}    header=True
-
 Log Out Website
+    [Documentation]    Log in to the user account
+
     Wait Until Element Is Visible    xpath://a[@class="logo"]
     Click Element    xpath://a[@class="logo"]
     Wait Until Element Is Visible    xpath://span[@class="customer-name"]
