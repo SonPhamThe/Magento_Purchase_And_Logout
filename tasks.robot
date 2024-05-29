@@ -142,7 +142,7 @@ Choose Each Product
     END
 
 Add Product To Cart By Color, Size And Price
-    [Documentation]    Add the product to the cart based on the specified color and size
+    [Documentation]    Add the product to the cart based on the specified color and size.
 
     ${value_visible}=    Run Keyword And Return Status    Get List Items    css:#limiter    values=True
     IF    not ${value_visible}    Fatal Error    Product Not Found
@@ -173,7 +173,7 @@ Add Product To Cart By Color, Size And Price
     END
 
 Process To Product
-    [Documentation]    Go To Detail Product And Check Product By Size, Color And Price Then Add Product
+    [Documentation]    Go To Detail Product And Check Product By Size, Color And Price Then Add Product.
     [Arguments]    ${link}
 
     Go To    ${link}
@@ -184,7 +184,7 @@ Process To Product
     END
 
 Get Product In Page
-    [Documentation]    Go To Detail Product In Page
+    [Documentation]    Go To Detail Product In Page.
 
     ${product_links}=    Get Product Links
     ${total_links}=    Get Length    ${product_links}
@@ -222,7 +222,7 @@ Get Product Links
     RETURN    ${product_links}
 
 Go To Cart And Make A Payment
-    [Documentation]    Proceeds to the checkout after adding products to the cart and saves the product information into an Excel file if the payment is successful
+    [Documentation]    Proceeds to the checkout after adding products to the cart and saves the product information into an Excel file if the payment is successful.
 
     Wait Until Element Is Not Visible    xpath://span[@class='counter qty empty']    timeout=10s
     ${check_cart}=    Run Keyword And Return Status
@@ -300,7 +300,7 @@ Go To Cart And Make A Payment
     END
 
 Check Product By Size, Color And Price
-    [Documentation]    Checks if the product matches the specified size, color, and price
+    [Documentation]    Checks if the product matches the specified size, color, and price.
 
     ${size}=    Get In Arg    size
     ${size_value}=    Set Variable    ${size}[value]
@@ -325,7 +325,7 @@ Check Product By Size, Color And Price
     RETURN    ${True}
 
 Check Size Exists
-    [Documentation]    Verify if the specified size exists for the product
+    [Documentation]    Verify if the specified size exists for the product.
     [Arguments]    ${size}
 
     ${sizes}=    Get WebElements    css:.swatch-option.text
@@ -341,7 +341,7 @@ Check Size Exists
     RETURN    ${size_found}
 
 Check Price Exists
-    [Documentation]    Verify if the product price falls within a specified range
+    [Documentation]    Verify if the product price falls within a specified range.
 
     ${below_price}=    Get In Arg    below_price
     ${below_price_value}=    Set Variable    ${below_price}[value]
@@ -359,7 +359,7 @@ Check Price Exists
     RETURN    ${price_found}
 
 Check Color Exists
-    [Documentation]    Verify if the specified color exists for the product
+    [Documentation]    Verify if the specified color exists for the product.
     [Arguments]    ${color}
 
     ${colors}=    Get WebElements    css:.swatch-option.color
@@ -375,7 +375,7 @@ Check Color Exists
     RETURN    ${color_found}
 
 Input Quantity Product
-    [Documentation]    Enters the specified quantity of the product into the corresponding field on the webpage
+    [Documentation]    Enters the specified quantity of the product into the corresponding field on the webpage.
 
     ${quantity}=    Get In Arg    quantity
     ${quantity_value}=    Set Variable    ${quantity}[value]
@@ -384,8 +384,7 @@ Input Quantity Product
     Input Text    id:qty    ${quantity_value}
 
 Save Infomation Product
-    [Documentation]    Temporarily stores the product information such as name, price, and quantity of each item in the shopping cart
-
+    [Documentation]    Temporarily stores the product information such as name, price, and quantity of each item in the shopping cart.
     ${global_product_info}=    Create List
     Wait Until Element Is Visible    xpath://table[@id='shopping-cart-table']    timeout=30s
     ${tbody}=    Get Webelements    xpath://table[@id='shopping-cart-table']/tbody
@@ -411,7 +410,7 @@ Save Infomation Product
     RETURN    ${global_product_info}
 
 Check Status Payment And Get Order Number
-    [Documentation]    Checks the payment status and retrieves the order number if the payment is successful
+    [Documentation]    Checks the payment status and retrieves the order number if the payment is successful.
 
     ${is_visible}=    Run Keyword And Return Status
     ...    Element Should Be Visible
