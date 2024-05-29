@@ -80,13 +80,20 @@ Login With Magento Credentials
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
     ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
-    Wait Until Keyword Succeeds
+    ${check_login}=    Run Keyword And Return Status    Wait Until Keyword Succeeds
     ...    3x
     ...    1s
     ...    Login With Credentials
     ...    ${meganto_account_credentials}[username]
     ...    ${meganto_account_credentials}[password]
     ...    css=span.customer-name
+    
+    IF    not ${check_login}    
+        Set Out Arg    purchaseStatus    ${False}
+        Set Out Arg    message_errors    C:\\Magento Purchase And Logout\\login_errors.txt
+        Fatal Error    Login failed. Stopping the execution.
+    END
+        
 
 Choose Each Product
     [Documentation]    Clicks on the product link based on the product category, wearables and type product.
@@ -293,9 +300,6 @@ Go To Cart And Make A Payment
 
         Set Out Arg    purchaseStatus    ${True}
     ELSE
-        ${file_path}=    Catenate    SEPARATOR=    ${DIRECTORY_PATH}    /    ${FILENAME}
-        Log Error    Payment purchase product failed
-        Set Out Arg    file_output    ${file_path}
         Set Out Arg    purchaseStatus    ${False}
     END
 

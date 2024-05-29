@@ -68,7 +68,15 @@
         "description": "purchaseStatus ",
         "type": "Boolean",
         "direction": "OUT",
-        "value": "True",
+        "value": "False",
+        "required": true
+    },
+    "message_errors": {
+        "name": "message_errorss",
+        "description": "Message Errors",
+        "type": "File",
+        "direction": "OUT",
+        "value": "C:\\Magento Purchase And Logout\\login_errors.txt",
         "required": true
     }
 }

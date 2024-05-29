@@ -59,6 +59,11 @@ arguments:
       required: True
       defaultValue:
       description: Purchase Status
+    - name: message_errors
+      type: File
+      required: True
+      defaultValue:
+      description: Mesage Errors
 
 condaConfigFile: conda.yaml
 environmentConfigs:
