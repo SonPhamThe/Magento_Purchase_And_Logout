@@ -78,7 +78,7 @@ Login With Magento Credentials
     Click Element    xpath=//li[@class="authorization-link"]/a
     ${meganto_account_credentials}=    Get Asset    meganto_account
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
-    ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
+    # ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
     ${check_login}=    Run Keyword And Return Status    Wait Until Keyword Succeeds
     ...    3x
@@ -91,7 +91,8 @@ Login With Magento Credentials
     IF    not ${check_login}    
         Set Out Arg    purchaseStatus    ${False}
         Set Out Arg    message_errors    C:\\Magento Purchase And Logout\\login_errors.txt
-        Fatal Error    Login failed. Stopping the execution.
+        Close All Browsers
+        Return From Keyword    ${False}
     END
         
 
