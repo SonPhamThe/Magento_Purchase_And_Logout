@@ -19,6 +19,7 @@ Library             RPA.JSON
 Library             DateTime
 Library             RPA.FileSystem
 Resource            resources/login_page.robot
+Resource            resources/handle_errors.robot
 Resource            resources/mouse_action.robot
 
 Suite Teardown      Close All Browsers
@@ -57,11 +58,11 @@ ${WATCHES_GEAR_CATEGORY_ID}     ui-id-27
 *** Tasks ***
 Automated E-commerce Shopping
     Open Website Magento
-    Login With Magento Credentials
-    Choose Each Product
-    Add Product To Cart By Color, Size And Price
-    Go To Cart And Make A Payment
-    Log Out Website
+    ${check_login}=    Login With Magento Credentials
+    IF    ${check_login}    Choose Each Product
+    IF    ${check_login}    Add Product To Cart By Color, Size And Price
+    IF    ${check_login}    Go To Cart And Make A Payment
+    IF    ${check_login}    Log Out Website
     Close All Browsers
 
 
@@ -78,7 +79,7 @@ Login With Magento Credentials
     Click Element    xpath=//li[@class="authorization-link"]/a
     ${meganto_account_credentials}=    Get Asset    meganto_account
     ${meganto_account_credentials}=    Set Variable    ${meganto_account_credentials}[value]
-    ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
+    # ${meganto_account_credentials}=    Convert String to JSON    ${meganto_account_credentials}
 
     ${check_login}=    Run Keyword And Return Status    Wait Until Keyword Succeeds
     ...    3x
@@ -87,14 +88,11 @@ Login With Magento Credentials
     ...    ${meganto_account_credentials}[username]
     ...    ${meganto_account_credentials}[password]
     ...    css=span.customer-name
-    
-    IF    not ${check_login}    
-        Set Out Arg    purchaseStatus    ${False}
-        Set Out Arg    message_errors    C:\\Magento Purchase And Logout\\login_errors.txt
-        Close All Browsers
-        Return From Keyword    ${False}
-    END
-        
+
+    IF    not ${check_login}    Handle Login Error    Login Failed
+    IF    ${check_login}    Log Info    Login successful
+
+    RETURN    ${check_login}
 
 Choose Each Product
     [Documentation]    Clicks on the product link based on the product category, wearables and type product.
